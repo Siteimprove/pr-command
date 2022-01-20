@@ -1,0 +1,113 @@
+name: Pull Request command
+description: "pr-command is an action that enables you to run commands on your pull requests using comments."
+inputs:
+  token:
+    description: "Authentication token for GitHub repository"
+    required: true
+  pr-comment:
+    description: "Comment that the bot should react on"
+    required: true
+  run:
+    description: "Bash command to be run when the bot is triggered"
+    required: true
+  commit-message:
+    description: "Commit message to be used when committing"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        if [[ "${{github.event.issue.pull_request && contains(github.event.comment.body, inputs.pr-comment)}}" == "false" ]]; then
+          echo ::set-output name=should_run::false
+        else
+          echo ::set-output name=should_run::true
+        fi
+      id: check
+      shell: bash
+
+    # Put rocket on the comment to mark that it has started adding screenshots
+    - name: React with Rocket
+      uses: actions/github-script@v5
+      if: ${{ steps.check.outputs.should_run == 'true' }}
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          github.rest.reactions.createForIssueComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            comment_id: context.payload.comment.id,
+            content: 'rocket'
+          });
+
+    # https://github.com/actions/checkout/issues/331
+    - name: Find PR
+      uses: actions/github-script@v5
+      if: ${{ steps.check.outputs.should_run == 'true' }}
+      id: get-pr
+      with:
+        script: |
+          const request = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          }
+          core.info(`Getting PR #${request.pull_number} from ${request.owner}/${request.repo}`)
+          try {
+            const result = await github.rest.pulls.get(request)
+            console.log("got pr")
+            return result.data
+          } catch (err) {
+            core.setFailed(`Request failed with error ${err}`)
+          }
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      if: ${{ steps.check.outputs.should_run == 'true' }}
+      with:
+        # Use the branch name from the PR step
+        repository: ${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}
+        ref: ${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
+        token: ${{ inputs.token }}
+
+    - name: Run command
+      if: ${{ steps.check.outputs.should_run == 'true' }}
+      shell: bash
+      run: ${{ inputs.run }}
+
+    - name: Commit changes (if any)
+      if: ${{ steps.check.outputs.should_run == 'true' }}
+      shell: bash
+      run: |
+        git config user.name github-actions
+        git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+        git add .
+        git commit -m "${{ inputs.commit-message }}" || true
+        git push
+
+    # Put a hooray on the comment to mark that it has been updated
+    - name: React with hooray
+      uses: actions/github-script@v5
+      if: ${{ steps.check.outputs.should_run == 'true' }}
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          github.rest.reactions.createForIssueComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            comment_id: context.payload.comment.id,
+            content: 'hooray'
+          });
+
+    # Put a confused on the comment to mark that it has failed
+    - name: 'Failure: React with confused'
+      if: ${{ failure() && steps.check.outputs.should_run == 'true' }}
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          github.rest.reactions.createForIssueComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            comment_id: context.payload.comment.id,
+            content: 'confused'
+          });
