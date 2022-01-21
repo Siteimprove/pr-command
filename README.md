@@ -43,7 +43,7 @@ jobs:
 ## Note: Token
 An authentication token is required in order to fetch the repository and add reactions on the comment.
 If you use the action in a personal repository, you can create a [PAT](https://github.com/settings/tokens) (Personal access token).
-If you use the action in an organisation, you probably want to use a PAT from an organizational user.
+If you use the action in an organization, you probably want to use a PAT from an organizational user.
 
 Normally the `GITHUB_TOKEN` would have been sufficient, but Github Actions blocks that in order to prevent recursive workflow runs.
 
