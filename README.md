@@ -27,8 +27,7 @@ jobs:
     steps:
       - uses: siteimprove/pr-command@v1
         with:
-          # Personal access token (PAT) used to fetch the repository.
-          # For most use-cases the GITHUB_TOKEN is fine: secrets.GITHUB_TOKEN
+          # Personal access token (PAT) used to fetch the repository and add reaction on comment (See note about token)
           token: ''
           # Comment that the action should be triggered on.
           # Note: if the comment contains special characters it needs to be wrapped as a string ''
@@ -40,6 +39,17 @@ jobs:
           commit-message: ''
 ```
 <!-- end usage -->
+
+## Note: Token
+An authentication token is required in order to fetch the repository and add reactions on the comment.
+If you use the action in a personal repository, you can create a [PAT](https://github.com/settings/tokens) (Personal access token).
+If you use the aciton in an organisation, you probably want to use a PAT from an organizational user.
+
+Normally the `GITHUB_TOKEN` would have been sufficient, but Github Actions blocks that in order to prevent recursive workflow runs.
+
+> When you use the repository's GITHUB_TOKEN to perform tasks, events triggered by the GITHUB_TOKEN will not create a new workflow run. This prevents you from accidentally creating recursive workflow runs. - [Github Action docs](https://docs.github.com/en/enterprise-server@3.0/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow)
+
+
 ## Example
 ```yaml
 name: Lint code
