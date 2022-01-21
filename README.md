@@ -64,7 +64,7 @@ jobs:
     steps:
       - uses: siteimprove/pr-command@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           pr-comment: '!pr lint'
           run: |
             npm ci
