@@ -71,3 +71,4 @@ jobs:
             npm run lint:fix
           commit-message: Lint code
 ```
+![Example](https://user-images.githubusercontent.com/25243461/150767980-d6c82e0a-e8a6-4e9e-8e29-07a2133ee65c.png)
