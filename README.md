@@ -37,6 +37,8 @@ jobs:
           run: ''
           # Commit message of the changes
           commit-message: ''
+          # This gets written as a comment on the PR
+          write-comment: ''
 ```
 <!-- end usage -->
 
