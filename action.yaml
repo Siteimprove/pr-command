@@ -9,10 +9,13 @@ inputs:
     required: true
   run:
     description: "Bash command to be run when the bot is triggered"
-    required: true
+    required: false
   commit-message:
     description: "Commit message to be used when committing"
-    required: true
+    required: false
+  write-comment:
+    description: "Comment that the bot should write on the pull-request"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -70,12 +73,12 @@ runs:
         token: ${{ inputs.token }}
 
     - name: Run command
-      if: ${{ steps.check.outputs.should_run == 'true' }}
+      if: ${{ steps.check.outputs.should_run == 'true' && inputs.run }}
       shell: bash
       run: ${{ inputs.run }}
 
     - name: Commit changes (if any)
-      if: ${{ steps.check.outputs.should_run == 'true' }}
+      if: ${{ steps.check.outputs.should_run == 'true' && inputs.commit-message }}
       shell: bash
       run: |
         git config user.name github-actions
@@ -83,6 +86,21 @@ runs:
         git add .
         git commit -m "${{ inputs.commit-message }}" || true
         git push
+
+    - name: Write comment
+      uses: actions/github-script@v5
+      if: ${{ steps.check.outputs.should_run == 'true' && inputs.write-comment }}
+      env:
+        COMMENT: ${{ inputs.write-comment }}
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.payload.issue.number,
+            body: `${process.env.COMMENT}`
+          });
 
     # Put a hooray on the comment to mark that it has been updated
     - name: React with hooray
