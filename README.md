@@ -2,7 +2,7 @@
 
 `pr-command` is an action that enables you to run commands on your pull requests using comments.
 
-This action will be triggered on comments on pull requests: it checks-out your pull request, runs a command, and commits the result back to the branch.
+This action will be triggered on comments on pull requests: it checks-out your pull request, runs a command, and commits the result back to the branch. It can also write a comment on the PR.
 
 When the command is started, a 🚀 is added as a reaction on the comment, and when the command is finished and changes are committed, a 🎉 is added as a reaction. If the command fails, 😕 is added as a reaction.
 
@@ -39,6 +39,16 @@ jobs:
           commit-message: ''
 ```
 <!-- end usage -->
+
+## Options
+
+| Option                    | Description                                                | Required       |
+| ------------------------- | ---------------------------------------------------------- | -------------- |
+| **`token`**               | Personal access token (PAT) used to fetch the repository.  | `true`         |
+| **`pr-comment`**          | Comment that the action should be triggered on.            | `true`         |
+| **`run`**                 | Command to be run when the comment has been written        | `false`        |
+| **`commit-message`**      | Commit message of the changes                              | `false`        |
+| **`write-comment`**       | A comment that the bot should write on the PR              | `false`        |
 
 ## Note: Token
 An authentication token is required in order to fetch the repository and add reactions on the comment.
