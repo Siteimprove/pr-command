@@ -21,7 +21,7 @@ jobs:
   <insert action name>:
     runs-on: ubuntu-latest
     steps:
-      - uses: siteimprove/pr-command@v1
+      - uses: siteimprove/pr-command/simple@v2
         with:
           # Personal access token (PAT) used to fetch the repository and add reaction on comment (See note about token)
           token: ''
