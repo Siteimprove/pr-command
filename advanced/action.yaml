@@ -159,7 +159,7 @@ runs:
 
           console.log("I will commit", jsonObject.commitMsg)
           if (jsonObject.commitMsg) {
-            const execres = await exec.exec(`bash -c "git config user.name github-actions && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add . && (git commit -m '${jsonObject.commitMsg}' || true) && git push"`)
+            const execres = await exec.exec(`bash -c "git config user.name github-actions && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add . && (git commit -m '${jsonObject.commitMsg}' || true) && git push --force-with-lease"`)
             if (execres != 0) process.exit(execres)
           }
 
