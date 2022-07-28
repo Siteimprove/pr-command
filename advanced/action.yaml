@@ -175,9 +175,9 @@ runs:
 
     - name: React with Emoji on success
       uses: actions/github-script@v6
-      if: ${{ steps.check.outputs.should_run == 'true' }}
+      if: ${{ steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
       env:
-        COMMAND_DETAILS: ${{ steps.command_details.outputs.result && !steps.help_check.outputs.is_help }}
+        COMMAND_DETAILS: ${{ steps.command_details.outputs.result }}
       with:
         github-token: ${{ inputs.token }}
         script: |
