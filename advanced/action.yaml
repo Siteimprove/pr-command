@@ -98,7 +98,6 @@ runs:
         github-token: ${{ inputs.token }}
         script: |
           const jsonObject = JSON.parse(process.env.COMMAND_DETAILS);
-          console.log("I put on a", jsonObject.startEmoji)
           if (jsonObject.startEmoji === null) return
           github.rest.reactions.createForIssueComment({
             owner: context.repo.owner,
