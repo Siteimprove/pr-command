@@ -87,11 +87,12 @@ runs:
             console.log(`Command \`${command}\` is not defined`)
             process.exit(1)
           }
+          await exec.exec(`bash -c "echo 'hasCommand=${!!jsonObject[command].command}' >> $GITHUB_OUTPUT"`)
           return jsonObject[command]
 
     - name: React with Emoji on start
       uses: actions/github-script@v6
-      if: ${{ steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
+      if: ${{ steps.command_details.outputs.hasCommand == 'true' && steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
       env:
         COMMAND_DETAILS: ${{ steps.command_details.outputs.result }}
       with:
@@ -150,7 +151,7 @@ runs:
 
     - name: React with Emoji on success
       uses: actions/github-script@v6
-      if: ${{ steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
+      if: ${{ steps.command_details.outputs.hasCommand == 'true' && steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
       env:
         COMMAND_DETAILS: ${{ steps.command_details.outputs.result }}
       with:
