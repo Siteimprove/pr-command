@@ -17,7 +17,7 @@ This can be used for anything, but examples include:
 ```json
 {
     "test": { //Test is the command key
-        "command": "echo test", // Executed through bash
+        "command": "echo test", // Executed through bash (optional)
         "description": "Hello!", // Visible in the help text
         "startEmoji": "+1", // Defaults to rocket(🚀), disable with null
         "successEmoji": "heart", // Defaults to hooray(🎉), disable with null
