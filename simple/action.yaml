@@ -21,9 +21,9 @@ runs:
   steps:
     - run: |
         if [[ "${{github.event.issue.pull_request && startsWith(github.event.comment.body, inputs.pr-comment)}}" == "false" ]]; then
-          echo ::set-output name=should_run::false
+          echo "should_run=false" >> $GITHUB_OUTPUT
         else
-          echo ::set-output name=should_run::true
+          echo "should_run=true" >> $GITHUB_OUTPUT
         fi
       id: check
       shell: bash
