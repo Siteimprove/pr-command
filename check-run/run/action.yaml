@@ -1,0 +1,76 @@
+name: Pull Request command (Run the command)
+description: "pr-command is an action that enables you to run commands on your pull requests using comments."
+
+inputs:
+  token:
+    description: "Authentication token for GitHub repository"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Handle PR Command"
+      if: env.PR_COMMAND_WILL_RUN == 'true'
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const jsonObject = JSON.parse(process.env.PR_COMMAND_DETAILS);
+          console.log("I will run", jsonObject.command)
+          let myOutput = '';
+          if (jsonObject.command) {
+            const options = {};
+            options.listeners = {
+              stdout: (data) => {
+                myOutput += data.toString();
+              },
+              stderr: (data) => {
+                myOutput += data.toString();
+              }
+            };
+            const execres = await exec.exec(`bash -c "${jsonObject.command}"`, undefined, options)
+            if (execres != 0) process.exit(execres)
+          }
+          console.log("I will commit", jsonObject.commitMsg)
+          if (jsonObject.commitMsg) {
+            const execres = await exec.exec(`bash -c "git config user.name github-actions && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add . && (git commit -m '${jsonObject.commitMsg}' || true) && git push --force-with-lease"`)
+            if (execres != 0) process.exit(execres)
+          }
+          console.log("I will write", jsonObject.commentMsg)
+          if (jsonObject.commentMsg) {
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `${jsonObject.commentMsg.replace('<COMMAND_RESULT>', myOutput)}`
+            });
+          }
+
+    - name: "React with Emoji on success"
+      if: success() && env.PR_COMMAND_WILL_RUN == 'true'
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const jsonObject = JSON.parse(process.env.PR_COMMAND_DETAILS);
+          console.log("I put on a", jsonObject.successEmoji)
+          if (jsonObject.successEmoji === null) return
+          github.rest.reactions.createForIssueComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            comment_id: context.payload.comment.id,
+            content: (jsonObject.successEmoji || 'hooray')
+          });
+
+    - name: 'Failure: React with confused'
+      if: failure() && env.PR_COMMAND_WILL_RUN == 'true'
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          github.rest.reactions.createForIssueComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            comment_id: context.payload.comment.id,
+            content: 'confused'
+          });
