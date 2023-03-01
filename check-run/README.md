@@ -27,7 +27,7 @@ jobs:
       # The repository has been checked out, on the latest commit on the PR that triggered the workflow.
       # All steps should be conditional with "if: env.PR_COMMAND_WILL_RUN == 'true'" to ensure they are
       # only run if needed.
-      # The 'check' action has set two environement variables:
+      # The 'check' action has set two environment variables:
       # * PR_COMMAND_WILL_RUN is 'true' iff check determined the comment triggers an existing command.
       # * PR_COMMAND_DETAILS is a JSON object containing the details of the command, as read from the config file.
       
