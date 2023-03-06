@@ -24,7 +24,7 @@ jobs:
           token: ''
           # Optional prefix to trigger the command, defaults to "!pr"
           prefix: "Magic bot, please run"
-          # Configuration file location (relative to top-level directoy), defaults to "./config/pr-commands.json"
+          # Configuration file location (relative to top-level directory), defaults to "./config/pr-commands.json"
           configFile: "./.pr-commands/config.json"
 
       # At this point, repository specific setup can be performed before running the actual PR commands.
