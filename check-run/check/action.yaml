@@ -9,6 +9,11 @@ inputs:
     description: "Prefix for commands, defaults to '!pr"
     required: false
     default: '!pr'
+  configFile:
+    description: "Location of the configuration file"
+    required: false
+    default: "./config/pr-commands.json"
+
 
 runs:
   using: "composite"
@@ -52,7 +57,7 @@ runs:
     - name: "Does configuration file exists?"
       if: steps.check.outputs.should_run == 'true'
       run: |
-        if [[ -f ./.pr-commands/config.json ]]; then
+        if [[ -f ${{ inputs.configFile }} ]]; then
           echo "has_config=true" >> $GITHUB_OUTPUT
         else
           echo "Pr-commands config file (.pr-commands/config.json) does not exist"
@@ -65,7 +70,7 @@ runs:
       if: steps.config.outputs.has_config == 'true'
       run: |
         echo 'CONFIG_JSON<<EOF' >> $GITHUB_ENV
-        cat ./.pr-commands/config.json >> $GITHUB_ENV
+        cat ${{ inputs.configFile }} >> $GITHUB_ENV
         echo 'EOF' >> $GITHUB_ENV
       shell: bash
 

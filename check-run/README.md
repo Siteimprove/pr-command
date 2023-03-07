@@ -2,7 +2,7 @@
 
 This version splits the actions in two parts: one that checks whether the action should run and does some basic setup (checkout the repository, handle the `help` command, …); the other that performs the actual action. Between the two actions, it is possible to interpose repository-specific commands, especially the ones that are used by all PR Commands flow (e.g., `actions/setup-node`, `install`, `build`, or `test`, …)
 
-The `config.json` file, options, and token restriction follows the exact same syntax as for the [advanced action](../advanced).
+The configuration file can be parametrised via the `configFile` input, the default location is `./config/pr-commands.json`. It otherwise follows the exact same syntax as for the [advanced action](../advanced).
 
 <!-- start usage -->
 **.github/workflows/pr-command.yaml**
@@ -22,6 +22,10 @@ jobs:
         with:
           # Personal access token (PAT) used to fetch the repository and add reaction on comment (See note about token)
           token: ''
+          # Optional prefix to trigger the command, defaults to "!pr"
+          prefix: "Magic bot, please run"
+          # Configuration file location (relative to top-level directory), defaults to "./config/pr-commands.json"
+          configFile: "./.pr-commands/config.json"
 
       # At this point, repository specific setup can be performed before running the actual PR commands.
       # The repository has been checked out, on the latest commit on the PR that triggered the workflow.
