@@ -29,6 +29,7 @@ runs:
       shell: bash
 
     - name: "Get PR details"
+      if: steps.check.outputs.should_run == 'true'
       uses: actions/github-script@v6
       id: get-pr
       with:
@@ -47,6 +48,7 @@ runs:
           }
 
     - name: "Checkout repository"
+      if: steps.check.outputs.should_run == 'true'
       uses: actions/checkout@v3
       with:
         token: ${{ inputs.token }}
