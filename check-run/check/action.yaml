@@ -20,7 +20,7 @@ runs:
   steps:
     - name: 'Should handle PR comment?'
       run: |
-        if [[ "${{github.event.issue.pull_request && startsWith(github.event.comment.body, inputs.prefix)}}" == "false" ]]; then
+        if [[ "${{github.event.issue.pull_request && startsWith(github.event.comment.body, inputs.prefix)}}" != "true" ]]; then
           echo "should_run=false" >> $GITHUB_OUTPUT
         else
           echo "should_run=true" >> $GITHUB_OUTPUT
