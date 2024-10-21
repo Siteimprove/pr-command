@@ -30,7 +30,7 @@ runs:
 
     - name: "Get PR details"
       if: steps.check.outputs.should_run == 'true'
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       id: get-pr
       with:
         script: |
@@ -49,7 +49,7 @@ runs:
 
     - name: "Checkout repository"
       if: steps.check.outputs.should_run == 'true'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         token: ${{ inputs.token }}
         repository: ${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}
@@ -84,7 +84,7 @@ runs:
 
     - name: "Print help"
       if: steps.help_check.outputs.is_help == 'true'
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       env:
         PREFIX: ${{ inputs.prefix }}
       with:
@@ -104,7 +104,7 @@ runs:
 
     - name: "Get PR Command details"
       if: steps.config.outputs.has_config == 'true' && steps.help_check.outputs.is_help != 'true'
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       id: command_details
       env:
         PREFIX: ${{ inputs.prefix }}
@@ -124,7 +124,7 @@ runs:
 
     - name: "React with Emoji on start"
       if: env.PR_COMMAND_WILL_RUN == 'true'
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.token }}
         script: |
