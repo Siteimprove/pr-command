@@ -30,7 +30,7 @@ runs:
 
     # Put rocket on the comment to mark that it has started adding screenshots
     - name: React with Rocket
-      uses: actions/github-script@v5
+      uses: actions/github-script@v7
       if: ${{ steps.check.outputs.should_run == 'true' }}
       with:
         github-token: ${{ inputs.token }}
@@ -43,7 +43,7 @@ runs:
           });
 
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       if: ${{ steps.check.outputs.should_run == 'true' }}
       with:
         token: ${{ inputs.token }}
@@ -64,7 +64,7 @@ runs:
         git push --force-with-lease
 
     - name: Write comment
-      uses: actions/github-script@v5
+      uses: actions/github-script@v7
       if: ${{ steps.check.outputs.should_run == 'true' && inputs.write-comment }}
       env:
         COMMENT: ${{ inputs.write-comment }}
@@ -80,7 +80,7 @@ runs:
 
     # Put a hooray on the comment to mark that it has been updated
     - name: React with hooray
-      uses: actions/github-script@v5
+      uses: actions/github-script@v7
       if: ${{ steps.check.outputs.should_run == 'true' }}
       with:
         github-token: ${{ inputs.token }}
@@ -95,7 +95,7 @@ runs:
     # Put a confused on the comment to mark that it has failed
     - name: 'Failure: React with confused'
       if: ${{ failure() && steps.check.outputs.should_run == 'true' }}
-      uses: actions/github-script@v5
+      uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.token }}
         script: |
