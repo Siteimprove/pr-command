@@ -11,7 +11,7 @@ runs:
   steps:
     - name: "Handle PR Command"
       if: env.PR_COMMAND_WILL_RUN == 'true'
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.token }}
         script: |
@@ -48,7 +48,7 @@ runs:
 
     - name: "React with Emoji on success"
       if: success() && env.PR_COMMAND_WILL_RUN == 'true'
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.token }}
         script: |
@@ -64,7 +64,7 @@ runs:
 
     - name: 'Failure: React with confused'
       if: failure() && env.PR_COMMAND_WILL_RUN == 'true'
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.token }}
         script: |
