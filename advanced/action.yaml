@@ -22,7 +22,7 @@ runs:
       shell: bash
 
     - name: Checkout pull-request branch
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       if: ${{ steps.check.outputs.should_run == 'true' }}
       with:
         token: ${{ inputs.token }}
@@ -49,7 +49,7 @@ runs:
 
     - name: Print help
       if: ${{ steps.help_check.outputs.is_help == 'true' }}
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       env:
         PREFIX: ${{ inputs.prefix }}
       with:
@@ -72,7 +72,7 @@ runs:
 
     - name: Get PR Command details
       if: ${{ steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       id: command_details
       env:
         PREFIX: ${{ inputs.prefix }}
@@ -91,7 +91,7 @@ runs:
           return jsonObject[command]
 
     - name: React with Emoji on start
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       if: ${{ steps.command_details.outputs.hasCommand == 'true' && steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
       env:
         COMMAND_DETAILS: ${{ steps.command_details.outputs.result }}
@@ -109,7 +109,7 @@ runs:
 
     - name: Handle PR Command
       if: ${{ steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       env:
         COMMENT: ${{ github.event.comment.body }}
         COMMAND_DETAILS: ${{ steps.command_details.outputs.result }}
@@ -150,7 +150,7 @@ runs:
           }
 
     - name: React with Emoji on success
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       if: ${{ steps.command_details.outputs.hasCommand == 'true' && steps.check.outputs.should_run == 'true' && !steps.help_check.outputs.is_help }}
       env:
         COMMAND_DETAILS: ${{ steps.command_details.outputs.result }}
@@ -169,7 +169,7 @@ runs:
 
     - name: 'Failure: React with confused'
       if: ${{ failure() && steps.check.outputs.should_run == 'true' }}
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.token }}
         script: |
